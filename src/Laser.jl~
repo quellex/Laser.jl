@@ -1,0 +1,41 @@
+# --------10--------20--------30--------40--------50--------60--------70--------80--------90--------100-------110-------120--------130
+module Laser
+using Parameters
+using Plots
+using PhysicalConstants
+include("unit.jl")
+# %%
+struct Field{TF <: Union{AbstractFloat,AbstractVector{<:AbstractFloat}}}
+	E::TF
+	A::TF
+end
+# %%
+struct Pulse{TF <: AbstractFloat,TS <: AbstractString,TI <: Integer}
+	I::TF
+	E::TF
+	λ::TF
+	ω::TF
+	T::TF
+	ϕ::TF
+	env_type::TS
+	ncyc::TI
+	tL::TF
+	t0::TF
+	tR::TF
+end
+function Pulse(fint, wlen, cep, env_type, ncyc_env)
+	I = fint
+	E = i2e(fint)
+	λ = wlen
+	ω = wlen2au(wlen)
+	T = 2π / ω
+	ϕ = deg2rad(cep)
+	tL = 0.
+	t0 = T * ncyc_env / 2
+	tR = T * ncyc_env
+	return Pulse(I, E, λ, ω, T, ϕ, env_type, ncyc_env, tL, t0, tR)
+end
+include("getEtAt.jl")
+include("plotfunc.jl")
+include("time.jl")
+end # module
