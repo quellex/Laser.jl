@@ -5,6 +5,8 @@ module Laser
 using Parameters
 using Plots
 using PhysicalConstants
+# export
+export Pulse, Time, getEt, getAt, get_env
 # unit conversion
 include("unit.jl")
 # Et => give E(t) and A(t) = -\int dt' E(t')
