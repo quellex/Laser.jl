@@ -8,7 +8,8 @@ using PhysicalConstants
 # export
 export Pulse, Time, getEt, getAt, get_env
 # unit conversion
-include("unit.jl")
+# include("unit.jl")
+using AtomicUnits
 # Et => give E(t) and A(t) = -\int dt' E(t')
 # At => give A(t) and E(t) = -dA/dt
 abstract type FormType end
