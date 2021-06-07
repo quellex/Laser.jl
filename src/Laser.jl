@@ -5,11 +5,8 @@ module Laser
 using Parameters
 using Plots
 using PhysicalConstants
-# export
-export Pulse, Time, getEt, getAt, get_env
-# unit conversion
-# include("unit.jl")
 using AtomicUnits
+export Pulse, Time, getEt, getAt, get_env
 # Et => give E(t) and A(t) = -\int dt' E(t')
 # At => give A(t) and E(t) = -dA/dt
 abstract type FormType end
