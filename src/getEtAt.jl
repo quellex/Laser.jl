@@ -2,7 +2,7 @@
 ## envelope
 function get_env(t::TF, pulse::Pulse{TE,TF}) where {TE,TF}
     @unpack tL, tR, T, env_type, ncyc = pulse
-    if t < tL || tR < t
+    if t <= tL || tR <= t
         return 0
     end
     if env_type == "sin2"
@@ -28,7 +28,7 @@ function getEt(t::TF, pulse::Pulse{Et,TF}) where {TF}
 end
 function getEt(t::TF, pulse::Pulse{At}) where {TF<:AbstractFloat}
     @unpack tL, tR, T = pulse
-    if t < tL || tR < t
+    if t <= tL || tR <= t
         return 0
     end
     dt = T * 1e-5
@@ -48,7 +48,7 @@ end
 ## vector potential
 function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
     @unpack tL, tR, T = pulse
-    if t < tL || tR < t
+    if t <= tL || tR <= t
         return 0
     end
     nt = 1
@@ -74,15 +74,14 @@ function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
 end
 function getAt(t::TF, pulse::Pulse{At,TF}) where {TF}
     @unpack tL, tR, T, A, ω, ϕ = pulse
-    if t < tL || tR < t
+    if t <= tL || tR <= t
         return 0
     end
     return A * get_env(t, pulse) * sin(ω * t + ϕ)
 end
 function getAt(t::TVF, pulse::Pulse) where {TVF<:AbstractVector{<:AbstractFloat}}
     At = zeros(eltype(t), size(t))
-    At[begin] = getAt(t[begin], pulse)
-    for it = 2:length(t)
+    for it = 1:length(t)
         At[it] = getAt(t[it], pulse)
     end
     return At
