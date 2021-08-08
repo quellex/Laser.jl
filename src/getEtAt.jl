@@ -55,8 +55,8 @@ function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
     tprev = pulse.tprev[1]
     At = pulse.Atprev[1]
     if tprev > t
-       tprev = 0.0
-       Atprev = 0.0
+       tprev = 0
+       At = 0
     end
     while (t - tprev) / nt > T / 100000
         nt *= 10
