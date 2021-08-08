@@ -1,7 +1,7 @@
 name = "Laser"
 uuid = "fa4f756c-b580-4410-9835-cdfdd292e869"
 authors = ["Takuma Teramura <=> and contributors"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 AtomicUnits = "490ed623-4b6c-45fe-a125-b26518be62f4"
