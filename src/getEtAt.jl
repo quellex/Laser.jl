@@ -22,6 +22,9 @@ function get_env(t::TVF, pulse::Pulse) where {TVF<:AbstractVector{<:AbstractFloa
     return env
 end
 ## electric field
+function getEtAt(t::TF, pulse::Pulse{TL,TF}) where {TL, TF}
+    return (getEt(t, pulse), getAt(t, pulse))
+end
 function getEt(t::TF, pulse::Pulse{Et,TF}) where {TF}
     @unpack E, ω, ϕ = pulse
     return E * get_env(t, pulse) * sin(ω * t + ϕ)
