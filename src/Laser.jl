@@ -3,8 +3,6 @@
 module Laser
 # modules
 using Parameters
-using Plots
-using PhysicalConstants
 using AtomicUnits
 export Pulse, Time, getEt, getAt, get_env
 # Et => give E(t) and A(t) = -\int dt' E(t')
@@ -12,39 +10,57 @@ export Pulse, Time, getEt, getAt, get_env
 abstract type FormType end
 struct Et <: FormType end
 struct At <: FormType end
-const _formtype_dict = Dict{String, T where T <: FormType}("Et" => Et(), "At" => At())
-struct Pulse{TE<:FormType, TF <: AbstractFloat,TS <: AbstractString,TI <: Integer}
-	form::TE
-	I::TF
-	E::TF
-	A::TF
-	λ::TF
-	ω::TF
-	T::TF
-	ϕ::TF
-	env_type::TS
-	ncyc::TI
-	tL::TF
-	t0::TF
-	tR::TF
+const _formtype_dict = Dict{String,T where T<:FormType}("Et" => Et(), "At" => At())
+struct Pulse{TE<:FormType,TF<:AbstractFloat,TS<:AbstractString,TI<:Integer}
+    form::TE
+    I::TF
+    E::TF
+    A::TF
+    λ::TF
+    ω::TF
+    T::TF
+    ϕ::TF
+    env_type::TS
+    ncyc::TI
+    tL::TF
+    t0::TF
+    tR::TF
+    tprev::Vector{TF}
+    Atprev::Vector{TF}
 end
 function Pulse(fint, wlen, cep, env_type, ncyc_env, form_type = "Et")
-	@assert haskey(_formtype_dict, form_type)
-	I = float(fint)
-	E = i2e(fint)
-	λ = float(wlen)
-	ω = wlen2au(wlen)
-	A = E / ω
-	T = 2π / ω
-	ϕ = deg2rad(float(cep))
-	tL = 0.
-	t0 = T * ncyc_env / 2
-	tR = T * ncyc_env
-	return Pulse(_formtype_dict[form_type], I, E, A, λ, ω, T, ϕ, env_type, ncyc_env, tL, t0, tR)
+    @assert haskey(_formtype_dict, form_type)
+    I = float(fint)
+    E = i2e(fint)
+    λ = float(wlen)
+    ω = wlen2au(wlen)
+    A = E / ω
+    T = 2π / ω
+    ϕ = deg2rad(float(cep))
+    tL = 0.0
+    t0 = T * ncyc_env / 2
+    tR = T * ncyc_env
+    tprev = [0.0]
+    Atprev = [0.0]
+    return Pulse(
+        _formtype_dict[form_type],
+        I,
+        E,
+        A,
+        λ,
+        ω,
+        T,
+        ϕ,
+        env_type,
+        ncyc_env,
+        tL,
+        t0,
+        tR,
+        tprev,
+        Atprev,
+    )
 end
-include("getEtAt_E.jl")
-include("getEtAt_A.jl")
-include("plotfunc.jl")
+include("getEtAt.jl")
 include("time.jl")
 end
 # %%
