@@ -52,12 +52,12 @@ function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
         return 0
     end
     nt = 1
-    tprev = pulse.Aprev[1]
+    tprev = pulse.tprev[1]
     while (t - tprev) / nt > T / 100000
         nt *= 10
     end
     dt = (t - tprev) / nt
-    At = pulse.Aprev[1]
+    At = pulse.Atprev[1]
     for it = 1:nt
         t0 = tprev + (it - 1) * dt
         t1 = t0 + dt / 2
@@ -65,7 +65,7 @@ function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
         At += (-dt / 6) * (getEt(t0, pulse) + 4getEt(t1, pulse) + getEt(t2, pulse))
     end
     pulse.tprev[1] = t
-    pulse.Aprev[1] = At
+    pulse.Atprev[1] = At
     return At
 end
 function getAt(t::TF, pulse::Pulse{At,TF}) where {TF}
