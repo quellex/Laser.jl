@@ -10,8 +10,8 @@ export Pulse, Time, getEt, getAt, getEtAt, get_env
 abstract type FormType end
 struct Et <: FormType end
 struct At <: FormType end
-const _formtype_dict = Dict{String,T where T<:FormType}("Et" => Et(), "At" => At())
-struct Pulse{TE<:FormType,TF<:AbstractFloat,TS<:AbstractString,TI<:Integer}
+const dict_formtype = Dict{Symbol,T where T <: FormType}(:Et => Et(), :At => At())
+struct Pulse{TE <: FormType,TF <: AbstractFloat,TI <: Integer}
     form::TE
     I::TF
     E::TF
@@ -20,7 +20,7 @@ struct Pulse{TE<:FormType,TF<:AbstractFloat,TS<:AbstractString,TI<:Integer}
     ω::TF
     T::TF
     ϕ::TF
-    env_type::TS
+    env_type::Symbol
     ncyc::TI
     tL::TF
     t0::TF
@@ -28,8 +28,8 @@ struct Pulse{TE<:FormType,TF<:AbstractFloat,TS<:AbstractString,TI<:Integer}
     tprev::Vector{TF}
     Atprev::Vector{TF}
 end
-function Pulse(fint, wlen, cep, env_type, ncyc_env, form_type = "Et")
-    @assert haskey(_formtype_dict, form_type)
+function Pulse(fint, wlen, cep, env_type, ncyc_env, form_type::Symbol=:Et)
+    @assert haskey(dict_formtype, form_type)
     I = float(fint)
     E = i2e(fint)
     λ = float(wlen)
@@ -43,7 +43,7 @@ function Pulse(fint, wlen, cep, env_type, ncyc_env, form_type = "Et")
     tprev = [0.0]
     Atprev = [0.0]
     return Pulse(
-        _formtype_dict[form_type],
+        dict_formtype[form_type],
         I,
         E,
         A,
