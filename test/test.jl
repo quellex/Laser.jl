@@ -17,5 +17,3 @@ p1 = plot(time.t, Et, label="Et")
 p2 = plot(time.t, At, label="At")
 # %%
 plot(p1, p2, layout=(2, 1))
-# %%
-pulseEt.tprev[1]

@@ -1,6 +1,6 @@
 # --------10--------20--------30--------40--------50--------60--------70--------80--------90--------100-------110-------120--------130
 ## envelope
-function get_env(t::TF, pulse::Pulse{TL,TF}) where {TL,TF}
+function get_env(t::TF, pulse::Pulse{TL,TF})::TF where {TL,TF}
     @unpack tL, tR, T, env_type, ncyc = pulse
     if t <= tL || tR <= t
         return 0
@@ -11,28 +11,28 @@ function get_env(t::TF, pulse::Pulse{TL,TF}) where {TL,TF}
         return sin((π * t) / (ncyc * T))^4
     else
         env_type == :flat || env_type == :delta
-        return 1.0
+        return 1
     end
 end
-function get_env(t::TVF, pulse::Pulse) where {TVF <: AbstractVector{<:AbstractFloat}}
+function get_env(t::TVF, pulse::Pulse)::TVF where {TVF <: AbstractVector{<:AbstractFloat}}
     env = zeros(eltype(t), size(t))
-    for it = 1:length(t)
+    for it in eachindex(t)
         env[it] = get_env(t[it], pulse)
     end
     return env
 end
 ## electric field
-function getEtAt(t::TF, pulse::Pulse{TL,TF}) where {TL,TF}
+function getEtAt(t::TF, pulse::Pulse{TL,TF})::TF where {TL,TF}
     return (getEt(t, pulse), getAt(t, pulse))
 end
-function getEt(t::TF, pulse::Pulse{Et,TF}) where {TF}
+function getEt(t::TF, pulse::Pulse{Et,TF})::TF where {TF}
     @unpack E, ω, ϕ = pulse
     return E * get_env(t, pulse) * sin(ω * t + ϕ)
 end
-function getEt(t::TF, pulse::Pulse{At}) where {TF <: AbstractFloat}
+function getEt(t::TF, pulse::Pulse{At})::TF where {TF <: AbstractFloat}
     @unpack tL, tR, T = pulse
     if t <= tL || tR <= t
-        return 0
+        return zero(TF)
     end
     dt = T * 1e-5
     Et =
@@ -41,15 +41,15 @@ function getEt(t::TF, pulse::Pulse{At}) where {TF <: AbstractFloat}
         (3 / 4dt) * (getAt(t + dt, pulse) - getAt(t - dt, pulse))
     return -Et
 end
-function getEt(t::TVF, pulse::Pulse) where {TVF <: AbstractVector{<:AbstractFloat}}
+function getEt(t::TVF, pulse::Pulse)::TVF where {TVF <: AbstractVector{<:AbstractFloat}}
     Et = zeros(eltype(t), length(t))
-    for it = 1:length(t)
+    for it in eachindex(t)
         Et[it] = getEt(t[it], pulse)
     end
     return Et
 end
 ## vector potential
-function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
+function getAt(t::TF, pulse::Pulse{Et,TF})::TF where {TF}
     @unpack tL, tR, T = pulse
     if t <= tL || tR <= t
         return 0
@@ -75,16 +75,16 @@ function getAt(t::TF, pulse::Pulse{Et,TF}) where {TF}
     pulse.Atprev[1] = At
     return At
 end
-function getAt(t::TF, pulse::Pulse{At,TF}) where {TF}
+function getAt(t::TF, pulse::Pulse{At,TF})::TF where {TF}
     @unpack tL, tR, T, A, ω, ϕ = pulse
     if t <= tL || tR <= t
         return 0
     end
     return A * get_env(t, pulse) * sin(ω * t + ϕ)
 end
-function getAt(t::TVF, pulse::Pulse) where {TVF <: AbstractVector{<:AbstractFloat}}
+function getAt(t::TVF, pulse::Pulse)::TVF where {TVF <: AbstractVector{<:AbstractFloat}}
     At = zeros(eltype(t), size(t))
-    for it = 1:length(t)
+    for it = eachindex(t)
         At[it] = getAt(t[it], pulse)
     end
     return At
