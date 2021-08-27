@@ -29,7 +29,7 @@ function getEt(t::TF, pulse::Pulse{Et,TF})::TF where {TF}
     @unpack E, ω, ϕ = pulse
     return E * get_env(t, pulse) * sin(ω * t + ϕ)
 end
-function getEt(t::TF, pulse::Pulse{At})::TF where {TF <: AbstractFloat}
+function getEt(t::TF, pulse::Pulse{At,TF})::TF where {TF}
     @unpack tL, tR, T = pulse
     if t <= tL || tR <= t
         return zero(TF)
