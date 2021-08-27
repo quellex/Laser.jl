@@ -22,7 +22,7 @@ function get_env(t::TVF, pulse::Pulse)::TVF where {TVF <: AbstractVector{<:Abstr
     return env
 end
 ## electric field
-function getEtAt(t::TF, pulse::Pulse{TL,TF})::TF where {TL,TF}
+function getEtAt(t::TF, pulse::Pulse{TL,TF})::Tuple{TF,TF} where {TL,TF}
     return (getEt(t, pulse), getAt(t, pulse))
 end
 function getEt(t::TF, pulse::Pulse{Et,TF})::TF where {TF}
