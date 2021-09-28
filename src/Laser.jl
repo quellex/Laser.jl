@@ -62,5 +62,6 @@ function Pulse(fint, wlen, cep, env_type, ncyc_env, form_type::Symbol=:Et)
 end
 include("getEtAt.jl")
 include("time.jl")
+include("flux.jl")
 end
 # %%
